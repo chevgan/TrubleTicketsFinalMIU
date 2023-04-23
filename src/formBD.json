@@ -1,0 +1,17 @@
+{
+  "siteName": [
+    { "name": "6667 ALMATY", "client": "K-cell", "address": "Павлодарская обеласть, г.K-cell" },
+    { "name": "KAZAKHTelecom", "client": "Tele 2", "address": "Павлодарская обеласть, г.Tele 2" },
+    { "name": "111KAZAKHTelecom", "client": "Tele 2", "address": "Павлодарская обеласть, г.Tele 2" }
+  ],
+  "responsiblePerson": [
+    { "name": "Дежурный NOC" },
+    { "name": "Антон" }
+  ],
+  "employeeName": [
+    { "name": "Бакаенко А."},
+    { "name": "Азимбеов Е."},
+    { "name": "Чевган Д."},
+    { "name": "Чанышев И."}
+  ]
+}
