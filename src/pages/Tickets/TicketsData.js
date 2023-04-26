@@ -72,8 +72,8 @@ const TicketsData = () => {
   const data = tickets.map((ticket, index) => ({
     id: ticket.id,
     ticketId: ticket.ticketId,
-    siteName: ticket.siteName,
-    client: ticket.client,
+    siteName: ticket.siteName.name,
+    client: ticket.siteName.client,
     ticketData: ticket.ticketData,
     downTime: ticket.downTime,
     employeeName: ticket.employeeName,
