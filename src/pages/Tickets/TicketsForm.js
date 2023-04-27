@@ -12,6 +12,7 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useRouter } from 'next/router';
 
 const FormContainer = styled('div')({
   display: 'flex',
@@ -42,6 +43,7 @@ const TicketsForm = () => {
   const employeeNameOptions = formBD.employeeName;
   const responsiblePersonOptions = formBD.responsiblePerson;
 
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       siteName: null,
@@ -64,6 +66,7 @@ const TicketsForm = () => {
 
       formik.resetForm();
       console.log(values); // Вывод данных в консоль
+
     },
   });
   const { user } = useAuthContext();
@@ -86,12 +89,15 @@ const TicketsForm = () => {
       authEmail: values.authEmail,
       dateReceived: values.dateReceived,
       dataLastSignalTime: values.dataLastSignalTime,
+      dataChannelRecovery: " ",
       description: values.description,
       reason: values.reason,
+      diagnostics: " ",
       ticketData: moment().locale('kz').format('DD.MM.YYYY HH:mm'),
       status: true,
     });
     console.log("Тикет создан!");
+    router.push('/');
   };
 
 

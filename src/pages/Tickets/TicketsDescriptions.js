@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar, Box, Card, CardActions, CardContent, Chip, Grid, Tab } from '@mui/material';
 import { useAuthContext } from '../../contexts/auth-context';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import OnDeleteTickets from './OnEditTickets';
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -93,7 +93,7 @@ const TicketsDescriptions = ({ id, data }) => {
                     <>
                       <Avatar
                         sx={{ height: 50, width: 50, marginRight: 2 }}
-                        src={'/assets/avatars/default_avatar.png'}
+                        img={'/assets/avatars/default_avatar.png'}
                       />
                       <Typography color="text.secondary" variant="body2" sx={{ marginRight: 3 }}>
                         {ticket.employeeName}<br />
@@ -192,7 +192,7 @@ const TicketsDescriptions = ({ id, data }) => {
                             Диагностика:
                           </Typography>
                           <Typography variant="h7" component="div">
-                            {ticket.diagnostic}
+                            {ticket.diagnostics}
                           </Typography>
                         </CardContent>
                       </Card>

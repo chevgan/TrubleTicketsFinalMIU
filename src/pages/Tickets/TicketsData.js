@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import {addDoc, collection, deleteDoc, doc, onSnapshot, query, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from './../../firebase';
 import { Button, IconButton } from '@mui/material';
-import { handleEditClick, handleDeleteClick } from './eventHandlers';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import OnDeleteTickets from './OnDeleteTickets';
 import TicketsDescriptions from './TicketsDescriptions';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { handleEditClick } from './eventHandlers';
+import { useRouter } from 'next/router';
 const TicketsData = () => {
   const [tickets, setTickets] = useState([]);
   const [hasData, setHasData] = useState(true);
@@ -30,7 +30,7 @@ const TicketsData = () => {
             variant="contained"
           >
             <TicketsDescriptions id={params.id} data={tickets} />
-            </IconButton>
+          </IconButton>
         </div>
       ),
     },,
@@ -67,7 +67,11 @@ const TicketsData = () => {
     },,
 
   ];
+  const router = useRouter();
 
+  const handleEditClick = (ticketId) => {
+    router.push(`/edit-ticket/${ticketId}`);
+  };
   // Data tickets
   const data = tickets.map((ticket, index) => ({
     id: ticket.id,
@@ -80,7 +84,11 @@ const TicketsData = () => {
     responsiblePerson: ticket.responsiblePerson,
     status: ticket.status,
   }));
-
+  const updateTicket = async (ticketId, updatedData) => {
+    const ticketRef = doc(db, "tickets", ticketId);
+    await updateDoc(ticketRef, updatedData);
+    console.log("Информация о тикете обновлена!");
+  };
   // Read tickets
   useEffect(() => {
     const q = query(collection(db, 'tickets'));
