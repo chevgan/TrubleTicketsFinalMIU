@@ -22,7 +22,7 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
+/*  {
     title: 'Контакты',
     path: '/contacts',
     icon: (
@@ -30,8 +30,8 @@ export const items = [
         <UsersIcon />
       </SvgIcon>
     )
-  },
-  {
+  },*/
+/*  {
     title: 'Заявки на выезд',
     path: '/\n' + 'repair-requests',
     icon: (
@@ -39,7 +39,7 @@ export const items = [
         <TruckIcon />
       </SvgIcon>
     )
-  },
+  },*/
   {
     title: 'Схемы',
     path: '/\n' + 'scheme',
@@ -76,7 +76,7 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
+/*  {
     title: 'Настройки',
     path: '/settings',
     icon: (
@@ -84,6 +84,6 @@ export const items = [
         <CogIcon />
       </SvgIcon>
     )
-  },
+  },*/
 
 ];

@@ -62,7 +62,7 @@ export const CustomersTable = (props) => {
                   Email
                 </TableCell>
                 <TableCell>
-                  Location
+                  Адресс
                 </TableCell>
                 <TableCell>
                   Phone

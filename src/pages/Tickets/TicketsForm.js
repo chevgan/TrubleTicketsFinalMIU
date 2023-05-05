@@ -94,6 +94,7 @@ const TicketsForm = () => {
       reason: values.reason,
       diagnostics: " ",
       ticketData: moment().locale('kz').format('DD.MM.YYYY HH:mm'),
+
       status: true,
     });
     console.log("Тикет создан!");

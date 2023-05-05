@@ -15,29 +15,71 @@ import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Avatar, Box, Card, CardActions, CardContent, Chip, Grid, Tab } from '@mui/material';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  Chip,
+  Grid, Step, StepLabel,
+  Stepper,
+  Tab
+} from '@mui/material';
 import { useAuthContext } from '../../contexts/auth-context';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import moment from 'moment';
+import {
+  getDocs,
+  query,
+  where,
+  orderBy,
+  collection,
+} from "firebase/firestore";
+import { db } from '../../firebase';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TicketsDescriptions = ({ id, data }) => {
-  const [value, setValue] = React.useState('1');
+const TicketsDescriptions = ({ id, data, ticketId }) => {
+  const [open, setOpen] = useState(false);
+  const [ticket, setTicket] = useState(null);
+  const { user } = useAuthContext();
+  const [value, setValue] = useState('1');
+  const [ticketHistory, setTicketHistory] = useState([]);
+
+  useEffect(() => {
+    const fetchTicketHistory = async () => {
+      const ticketDescriptionsRef = collection(db, "ticketHistory");
+      const q = query(
+        ticketDescriptionsRef,
+        where("ticketId", "==", ticketId),
+        orderBy("timestamp", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      console.log("querySnapshot:", querySnapshot); // добавьте эту строку
+      setTicketHistory(
+        querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+    };
+
+    fetchTicketHistory();
+  }, [ticketId]);
+
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [open, setOpen] = useState(false);
-  const [ticket, setTicket] = useState(null);
-  const { user } = useAuthContext();
 
   useEffect(() => {
     const selectedTicket = data.find((ticket) => ticket.id === id);
     setTicket(selectedTicket);
   }, [id, data]);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -49,6 +91,8 @@ const TicketsDescriptions = ({ id, data }) => {
   if (!ticket) {
     return null;
   }
+
+
   return (
     <div>
       <IconButton  onClick={handleClickOpen}>
@@ -157,12 +201,12 @@ const TicketsDescriptions = ({ id, data }) => {
                           </Typography>
                           <Typography>
                             <Divider/>
-                            <span style={{ color: "#6366F1" }}>Дата восстановления канала: </span><span style={{ fontWeight: '600' }}>123123</span>
+                            <span style={{ color: "#6366F1" }}>Дата восстановления канала: </span><span style={{ fontWeight: '600' }}>{ticket.dataChannelRecovery}</span>
                             <Divider/>
                           </Typography>
                           <Typography>
                             <Divider/>
-                            <span style={{ color: "#6366F1" }}>Простой: </span><span style={{ fontWeight: '600' }}>123123</span>
+                            <span style={{ color: "#6366F1" }}>Простой: </span><span style={{ fontWeight: '600' }}>{ticket.downTime}</span>
                             <Divider/>
                           </Typography>
                         </CardContent>
@@ -216,8 +260,96 @@ const TicketsDescriptions = ({ id, data }) => {
 
 
 
-
-            <TabPanel value="2">История изменений</TabPanel>
+            {ticketHistory.map((record, index) => (
+              <div key={index}>
+                <TabPanel value="2">
+                  <Card sx={{ minWidth: 275, mb: 2 }}>
+                    <CardContent
+                      sx={{
+                        backgroundColor: record.changes.status === false ? '#6bd56b' : 'inherit',
+                      }}
+                    >
+                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h6" component="div">
+                          {record.timestamp}
+                        </Typography>
+                        <Typography variant="subtitle1" color="text.secondary">
+                          <Box display="flex" alignItems="center">
+                            <Avatar
+                              sx={{ height: 50, width: 50, marginRight: 2 }}
+                              src={record.authUser && record.authUser.avatar ? record.authUser.avatar : '/assets/avatars/default_avatar.png'}
+                            />
+                            <Typography color="text.secondary" variant="body2">
+                              {record.authUser && record.authUser.name}<br/>
+                              Редактировал тикет
+                            </Typography>
+                          </Box>
+                        </Typography>
+                      </Box>
+                      <Box mt={2}>
+                        <Typography variant="body1">
+                          Описание: {record.changes.description === undefined
+                          ? ticket.description
+                          : record.changes.description}
+                        </Typography>
+                        <Typography variant="body1">
+                          Диагностика: {record.changes.diagnostics === undefined
+                          ? ticket.diagnostics
+                          : record.changes.diagnostics}
+                        </Typography>
+                        <Typography variant="body1">
+                          Причина: {record.changes.reason === undefined
+                          ? ticket.reason
+                          : record.changes.reason}
+                        </Typography>
+                        <Typography variant="body1">
+                          Дата закрытия: {record.changes.dataChannelRecovery}
+                        </Typography>
+                        <Typography variant="body1">
+                          Статус: {record.changes.status === false
+                          ? 'Тикет закрыт'
+                          : 'Открыт'}
+                        </Typography>
+                        <br/>
+                        {record.changes.responsiblePerson && (
+                          <Typography variant="body1">
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <strong>Переводы: </strong>
+                              <Box
+                                sx={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  marginLeft: '0.5rem',
+                                  marginRight: '0.5rem',
+                                }}
+                              >
+                                {record.authUser.name}
+                              </Box>
+                              <ArrowRightAltIcon fontSize="small" />
+                              <Box
+                                sx={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  marginLeft: '0.5rem',
+                                }}
+                              >
+                                {record.changes.responsiblePerson}
+                              </Box>
+                            </Box>
+                          </Typography>
+                        )}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </TabPanel>
+              </div>
+            ))}
           </TabContext>
         </Box>
       </Dialog>

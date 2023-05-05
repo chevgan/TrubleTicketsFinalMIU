@@ -3,8 +3,9 @@ import EditTicketForm from '../Tickets/EditTicketForm';
 import { useEffect, useState } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { Box, LinearProgress } from '@mui/material';
+import { Box, Button, Divider, Grid, LinearProgress, SvgIcon } from '@mui/material';
 import { margin } from '@mui/system';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const EditTicketPage = () => {
   const router = useRouter();
@@ -55,12 +56,30 @@ const EditTicketPage = () => {
 
   return (
     <div>
-      <Box sx={{ ml: 2 }}>
-        <h1>Редактировать тикет #{ticket.ticketId}</h1>
+      <Box sx={{ ml: 2, mr: 2 }}>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <h1>Редактировать тикет #{ticket.ticketId}</h1>
+          </Grid>
+          <Grid item>
+            <Button
+              href="/"
+              startIcon={
+                <SvgIcon>
+                  <ArrowBackIosIcon />
+                </SvgIcon>
+              }
+              variant="outlined"
+            >
+              Отменить редактирование
+            </Button>
+          </Grid>
+        </Grid>
+        <Divider variant="middle" sx={{ borderColor: '#4338CA', m: 0 }} />
+        <br/>
         <EditTicketForm ticketId={ticketId} ticket={ticket} />
       </Box>
     </div>
-
   );
 };
 
